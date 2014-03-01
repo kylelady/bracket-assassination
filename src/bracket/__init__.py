@@ -2,8 +2,7 @@ from flask import Flask
 import os
 
 def _get_bracket_template_folder():
-    folder = os.path.abspath(os.path.join(os.getcwd(), '..', '..', 'html'))
-    print folder
+    folder = os.path.abspath(os.path.join(os.getcwd(), 'html'))
     return folder
 
 # Create the Flask object, with the correct template folder
