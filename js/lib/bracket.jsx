@@ -126,8 +126,10 @@ var EntryBox = React.createClass({
 var MatchBox = React.createClass({
 
   render: function() {
+    var offsetClass = 'off-' + this.props.round;
+    var matchClasses ="row match " + offsetClass;
     return (
-      <div className="row match">
+      <div className={matchClasses}>
         <EntryBox status="favorite" team={this.props.favorite} />
         <EntryBox status="underdog" team={this.props.underdog} />
       </div>
@@ -138,15 +140,17 @@ var MatchBox = React.createClass({
 var RoundBox = React.createClass({
 
   render: function() {
-    var classes = "col-md-2 round " + this.props.roundClass;
+    var roundClass = 'r' + this.props.roundNumber;
+    var classes = "col-md-2 round " + roundClass;
     var matches = this.props.matches.map(function(match) {
       return (
         <MatchBox 
           favorite={match.getFirst()}
-          underdog={match.getSecond()} 
+          underdog={match.getSecond()}
+          round={this.props.roundNumber} 
         />
       );
-    });
+    }.bind(this));
     return (
       <div className={classes}>
         <div className="row round-header">
@@ -174,6 +178,8 @@ var BracketHolder = React.createClass({
   matches: [
     Match(TEAMS[0], TEAMS[1], true),
     Match(TEAMS[2], TEAMS[3], true),
+    Match(TEAMS[4], TEAMS[5], true),
+    Match(TEAMS[6], TEAMS[7], true),
   ],
 
   roundNames: [
@@ -186,11 +192,11 @@ var BracketHolder = React.createClass({
   ],
 
   render: function() {
-    var dummyRounds = [1, 2, 3, 4, 5, 6];
+    var dummyRounds = [1, 2, 3, 4, 5];
     var rounds = dummyRounds.map(function(elt, idx) {
       return (
         <RoundBox
-          roundClass={'r' + idx} 
+          roundNumber={idx}
           roundName={this.roundNames[idx]}
           matches={this.matches}
         />
