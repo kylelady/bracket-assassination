@@ -1,9 +1,14 @@
 /** @jsx React.DOM */
 var EntryBox = React.createClass({
+	getInitialState: function() {
+		return {
+			team: "Kyle Lady",
+		};
+	},
 	render: function() {
 		return (
 			<div className="entryBox">
-				'Hello, I am an EntryBox'
+				{this.state.team}
 			</div>
 		);
 	}

@@ -1,7 +1,5 @@
 /** @jsx React.DOM */
-console.log('hello');
-
 React.renderComponent(
-	<EntryBox />,
+	<Bracket players="bracket.json" />,
 	document.getElementById('content')
 );
