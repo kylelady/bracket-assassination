@@ -1,5 +1,5 @@
 /** @jsx React.DOM */
 React.renderComponent(
-	<Bracket players="bracket.json" />,
+	<BracketHolder bracket={null} />,
 	document.getElementById('content')
 );

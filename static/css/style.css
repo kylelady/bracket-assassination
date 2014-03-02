@@ -1,0 +1,16 @@
+.round {
+}
+
+.favorite {
+	border-style: solid;
+	border-width: 2px;
+}
+
+.underdog {
+	border-style: none solid solid solid;
+	border-width: 2px
+}
+
+.match {
+	margin: 4px 0px 4px 0px
+}
