@@ -1,1 +1,4 @@
-
+iframe {
+	border: none;
+	height: auto;
+}

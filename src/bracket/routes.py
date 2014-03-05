@@ -9,3 +9,7 @@ def index():
 @app.route('/bracket')
 def bracket():
 	return render_template('bracket.view')
+
+
+
+

@@ -1,4 +1,5 @@
 {% extends "layout.view" %}
 {% block content %}
-<iframe src="bracket" width="500px"></iframe>
+<h1>Admin</h1>
+<p>Hello, World!</p>
 {% endblock %}
