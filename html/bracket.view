@@ -7,14 +7,15 @@
 
   <title>Assassination</title>
 
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="static/css/jquery.bracket.min.css" />
   <link rel="stylesheet" href="static/css/style.css">
   <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript" src="static/js/jquery.bracket.min.js"></script>
+  <script type="text/javascript" src="static/js/bracket.js"></script>  
 </head>
 <body>
-  <div class="container">
-    <iframe src="bracket"></iframe>
+  <div id="bracket-holder">
   </div>
+  </div> 
 </body>
 </html>
