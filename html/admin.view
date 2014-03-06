@@ -11,7 +11,7 @@
     <div class="well">
       <ul>
         <li><a href="#players">Players</a></li>
-        <li><a href="#playeradd">Add a player</a></li>
+        <li><a href="#matches">Matches</a></li>
       </ul>
     </div>
   </div>
@@ -19,26 +19,6 @@
     <div class="row">
       <h3 id="players">Players</h3>
       <div id="react-playerTable">
-      </div>
-    </div>
-    <div class="row">
-      <h3 id="playeradd">Add a player</h3>
-      <div class="col-md-9">
-        <form role="form" action="admin/player" method="post">
-          <div class="form-group">
-            <label for="playerNameInput">Name</label>
-            <input type="text" class="form-control" placeholder="Enter name..." id="playerNameInput" name="name"></input>
-          </div>
-          <div class="form-group">
-            <label for="playerUniqnameInput">Uniqname</label>
-            <input type="text" class="form-control" placeholder="Enter uniqname..." id="playerUniqnameInput" name="uniqname"></input>
-          </div>
-          <div class="form-group">
-            <label for="playerRankInput">Rank</label>
-            <input type="text" class="form-control" placeholder="Enter rank..." id="playerRankInput" name="rank"></input>
-          </div>
-          <button type="submit" class="btn btn-default">Add/Edit Player</button>
-        </form>
       </div>
     </div>
     <div class="row">
