@@ -81,3 +81,12 @@ def json_add_player():
     db.add_player(player_fields)
     return player_to_json(player_fields)
 
+@app.route('/api/player/delete', methods=[ 'POST' ])
+def json_rm_player():
+    if 'uniqname' not in request.form:
+        raise InvalidRequest
+    uniqname = request.form['uniqname']
+    db.remove_player({'uniqname': uniqname })
+    return json.dumps({'status': 'SUCCESS'})
+
+

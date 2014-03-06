@@ -32,6 +32,13 @@ def update_player(spec, change, **kwargs):
     except OperationFailure:
         raise errors.DatabaseError
 
+def remove_player(spec, **kwargs):
+    try:
+        return mongo.db.players.remove(spec);
+    except OperationFailure:
+        raise errors.DatabaseError
+
+
 def players_by_rank(spec=None, **kwargs):
     sort_order = [
         ('rank', SORT_ASCENDING),
