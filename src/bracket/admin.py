@@ -1,6 +1,6 @@
 from . import app
 from . import mongo
-from . import db, errors, players
+from . import db, errors
 
 from flask import render_template, url_for, redirect, request
 

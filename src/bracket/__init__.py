@@ -40,4 +40,6 @@ def _inject_defaults():
 
 # Set up routes
 import routes
+import players
 import admin
+import matches

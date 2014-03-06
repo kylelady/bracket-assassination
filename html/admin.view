@@ -23,22 +23,8 @@
     </div>
     <div class="row">
       <h3 id="matches">Matches</h3>
-      <table class="table">
-        <thead>
-          <th>Favorite</th>
-          <th>Underdog</th>
-          <th>Round</th>
-        </thead>
-        <tbody>
-          {% for match in matches %}
-            <tr>
-              <td>{{ match['favorite']['uniqname'] }}</td>
-              <td>{{ match['underdog']['uniqname'] }}</td>
-              <td>{{ match['round'] }}</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+      <div id="react-matchTable">
+      </div>
     </div>
   </div>
 {% endblock %}

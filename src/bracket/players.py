@@ -16,6 +16,8 @@ PLAYER_FIELDS_DICT = {
     'rank': True,
 }
 
+# This api is shitty
+
 def player_to_json(player):
     obj = {
         'name': player['name'],
