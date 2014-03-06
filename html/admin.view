@@ -1,5 +1,68 @@
 {% extends "layout.view" %}
+{% block head_scripts %}
+<script src="//fb.me/react-0.9.0.js"></script>
+<script src="//fb.me/JSXTransformer-0.9.0.js"></script>
+{% endblock %}
+
 {% block content %}
-<h1>Admin</h1>
-<p>Hello, World!</p>
+<h1 class="page-header">Admin <small>Control the minions!</small></h1>
+<div class="row">
+  <div class="col-md-3">
+    <div class="well">
+      <ul>
+        <li><a href="#players">Players</a></li>
+        <li><a href="#playeradd">Add a player</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <div class="row">
+      <h3 id="players">Players</h3>
+      <div id="react-playerTable">
+      </div>
+    </div>
+    <div class="row">
+      <h3 id="playeradd">Add a player</h3>
+      <div class="col-md-9">
+        <form role="form" action="admin/player" method="post">
+          <div class="form-group">
+            <label for="playerNameInput">Name</label>
+            <input type="text" class="form-control" placeholder="Enter name..." id="playerNameInput" name="name"></input>
+          </div>
+          <div class="form-group">
+            <label for="playerUniqnameInput">Uniqname</label>
+            <input type="text" class="form-control" placeholder="Enter uniqname..." id="playerUniqnameInput" name="uniqname"></input>
+          </div>
+          <div class="form-group">
+            <label for="playerRankInput">Rank</label>
+            <input type="text" class="form-control" placeholder="Enter rank..." id="playerRankInput" name="rank"></input>
+          </div>
+          <button type="submit" class="btn btn-default">Add/Edit Player</button>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <h3 id="matches">Matches</h3>
+      <table class="table">
+        <thead>
+          <th>Favorite</th>
+          <th>Underdog</th>
+          <th>Round</th>
+        </thead>
+        <tbody>
+          {% for match in matches %}
+            <tr>
+              <td>{{ match['favorite']['uniqname'] }}</td>
+              <td>{{ match['underdog']['uniqname'] }}</td>
+              <td>{{ match['round'] }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}
+
+{% block bottom %}
+<script src="static/js/admin.jsx" type="text/jsx"></script>
 {% endblock %}
