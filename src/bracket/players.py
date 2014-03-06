@@ -16,6 +16,15 @@ PLAYER_FIELDS_DICT = {
     'rank': True,
 }
 
+def player_to_json(player):
+    obj = {
+        'name': player['name'],
+        'uniqname': player['uniqname'],
+    }
+    if 'rank' in player:
+        obj['rank'] = player['rank']
+    return json.dumps(obj)
+
 
 def enforce_present(get_args=None, post_args=None):
     def real_decorator(function):
@@ -45,15 +54,30 @@ def json_players():
 
 @app.route('/api/player', methods=[ 'GET', 'POST' ])
 @enforce_present(get_args=['uniqname'], post_args=['uniqname'])
-def json_player(args=None):
+def json_player():
     if request.method == 'GET':
         uniqname = request.args['uniqname']
-        player = db.player_if_exists(uniqname, fields=PLAYER_FIELDS)
+        player = db.player_if_exists(uniqname, fields=PLAYER_FIELDS_DICT)
         return bson.json_util.dumps(player)
 
     elif request.method == 'POST':
         update_keys = set(PLAYER_FIELDS) & set(request.form.keys())
         new_doc = { k: request.form[k] for k in update_keys }
         db.update(uniqname, new_doc)
-        player = db.player_if_exists(uniqname, fields=PLAYER_FIELDS)
-        return json.dumps(player)
+        player = db.player_if_exists(uniqname, fields=PLAYER_FIELDS_DICT)
+        return bson.json_util.dumps(player)
+
+@app.route('/api/player/add', methods=[ 'POST' ])
+def json_add_player():
+    player_fields = {
+        'name': request.form['name'],
+        'uniqname': request.form['uniqname']
+    }
+    if 'rank' in request.form:
+        try:
+            player_fields['rank'] = int(request.form['rank'])
+        except ValueError:
+            raise InvalidRequest
+    db.add_player(player_fields)
+    return player_to_json(player_fields)
+

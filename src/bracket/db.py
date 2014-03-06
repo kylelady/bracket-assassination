@@ -19,9 +19,9 @@ def players(spec=None, **kwargs):
     except OperationFailure:
         raise errors.DatabaseError
 
-def add_player(player):
+def add_player(player, **kwargs):
     try:
-        return mongo.db.players.insert(player)
+        return mongo.db.players.insert(player, **kwargs)
     except OperationFailure:
         raise errors.DatabaseError
 
