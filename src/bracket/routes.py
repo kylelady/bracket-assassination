@@ -1,15 +1,11 @@
-from . import app
-from flask import render_template, request
+import admin
 
-@app.route('/')
-@app.route('/index')
-def index():
-    return render_template('index.view')
+import cyclone.web
 
-@app.route('/bracket')
-def bracket():
-	return render_template('bracket.view')
-
-
-
-
+url_handlers = [
+	(r'/api/players/', admin.PlayerHandler),
+	(r'/api/players/([A-Za-z]+)', admin.SinglePlayerHandler),
+	(r'/api/players/([A-Za-z]+)/delete/', admin.SinglePlayerHandler),
+	(r'/admin/', admin.AdminHandler),
+	(r'/static/(.*)', cyclone.web.StaticFileHandler, {'path': 'static'}),
+]

@@ -2,7 +2,7 @@
 {% block head_scripts %}
 <script src="//fb.me/react-0.9.0.js"></script>
 <script src="//fb.me/JSXTransformer-0.9.0.js"></script>
-{% endblock %}
+{% end %}
 
 {% block content %}
 <h1 class="page-header">Admin <small>Control the minions!</small></h1>
@@ -27,8 +27,8 @@
       </div>
     </div>
   </div>
-{% endblock %}
+{% end %}
 
 {% block bottom %}
-<script src="static/js/admin.jsx" type="text/jsx"></script>
-{% endblock %}
+<script src="/static/js/admin.jsx" type="text/jsx"></script>
+{% end %}

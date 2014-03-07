@@ -5,23 +5,23 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>{{ page_title }}</title>
+  <title>Assassination</title>
 
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="static/css/jquery.bracket.min.css" />
   <link rel="stylesheet" href="static/css/style.css">
   <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
   {% block head_scripts %}
-  {% endblock %}
+  {% end %}
 </head>
 <body>
   <div class="container">
     {% block content %}
-    {% endblock %}
+    {% end %}
   </div>
   <footer>
   </footer>
   {% block bottom %}
-  {% endblock %}
+  {% end %}
 </body>
 </html>

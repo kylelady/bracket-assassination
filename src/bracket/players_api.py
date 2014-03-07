@@ -16,6 +16,8 @@ PLAYER_FIELDS_DICT = {
     'rank': True,
 }
 
+class PlayerHandler()
+
 # This api is shitty
 
 def player_to_json(player):
