@@ -56,7 +56,7 @@ def from_uniqname(uniqname):
 
 def remove_uniqname(uniqname):
     try:
-        mongo.players.remove(spec={'uniqname', uniqname})
+        mongo.players.remove(spec_or_id={'uniqname': uniqname})
     except conn.MongoError:
         raise conn.DatabaseError
 

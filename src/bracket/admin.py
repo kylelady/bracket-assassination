@@ -2,47 +2,46 @@ import web
 import db
 import errors
 
+import cyclone.web
+
 from db.players import Player
 
-class SinglePlayerHandler(web.ApiHandler):
+class SinglePlayerHandler(cyclone.web.RequestHandler):
 
-    def handle_get(self, uniqname):
+    def get(self, uniqname):
         player = db.players.from_uniqname(uniqname)
         if player:
-            res = self.make_response(player.to_dict())
+            res = self.write(player.to_dict())
         else:
-            res = self.make_response(list())
+            res = self.write(list())
 
     @web.require_admin
-    def handle_post(self, uniqname):
+    def post(self, uniqname):
         raise InvalidRequest
 
-class PlayerDeleteHandler(web.ApiHandler):
+class PlayerDeleteHandler(cyclone.web.RequestHandler):
 
-    @web.require_admin
-    def handle_post(self, uniqname):
+    def post(self, uniqname):
         db.players.remove_uniqname(uniqname)
-        self.make_response()
+        self.write({'status': 'OK'})
 
+class PlayerHandler(cyclone.web.RequestHandler):
 
-
-class PlayerHandler(web.ApiHandler):
-
-    def handle_get(self):
+    def get(self):
         players = map(lambda p: p.to_dict(), db.players.find_many())
-        self.make_response(players)
+        self.write({'players': players})
 
-    def handle_post(self):
+    def post(self):
         uniqname = self.get_argument('uniqname')
         full_name = self.get_argument('full_name')
         rank = self.get_argument('rank', None)
         player = Player(uniqname, full_name, rank=rank)
         player_dict = db.players.save_new(player)
-        self.make_response(player_dict)
+        self.write(player_dict)
 
-class AdminHandler(web.AssassinationHandler):
+class AdminHandler(cyclone.web.RequestHandler):
 
-    def handle_get(self):
+    def get(self):
         self.render('admin.view')
 
 
