@@ -16,16 +16,8 @@
     </div>
   </div>
   <div class="col-md-9">
-    <div class="row">
-      <h3 id="players">Players</h3>
-      <div id="react-playerTable">
-      </div>
-    </div>
-    <div class="row">
-      <h3 id="matches">Matches</h3>
-      <div id="react-matchTable">
-      </div>
-    </div>
+    <div id="react-adminInterface">
+  </div>
   </div>
 {% end %}
 
