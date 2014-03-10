@@ -17,6 +17,8 @@ class Player(object):
         }
         if self.rank:
             obj['rank'] = self.rank
+        if self._id:
+            obj['_id'] = self._id
         return obj
 
 def save_new(player):

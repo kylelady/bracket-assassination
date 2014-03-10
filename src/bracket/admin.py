@@ -1,45 +1,63 @@
 import web
 import db
 import errors
+import const
 
 import cyclone.web
 
 from db.players import Player
 
-class SinglePlayerHandler(cyclone.web.RequestHandler):
+import db.conn
+
+mongo = db.conn.get_dbconnection()
+
+class SinglePlayerHandler(web.RequestHandler):
 
     def get(self, uniqname):
-        player = db.players.from_uniqname(uniqname)
-        if player:
-            res = self.write(player.to_dict())
-        else:
-            res = self.write(list())
+        res = dict()
+        player = mongo.players.find_one(spec={'uniqname': uniqname})
+        res['player'] = player
+        self.write_mongo_obj(res)
 
-    @web.require_admin
     def post(self, uniqname):
         raise InvalidRequest
 
-class PlayerDeleteHandler(cyclone.web.RequestHandler):
+class PlayerDeleteHandler(web.RequestHandler):
 
     def post(self, uniqname):
-        db.players.remove_uniqname(uniqname)
-        self.write({'status': 'OK'})
+        mongo.players.remove(spec_or_id={'uniqname': uniqname})
+        self.write({'status': const.STATUS_OK})
 
-class PlayerHandler(cyclone.web.RequestHandler):
+class PlayerHandler(web.RequestHandler):
 
     def get(self):
-        players = map(lambda p: p.to_dict(), db.players.find_many())
-        self.write({'players': players})
+        res = dict()
+        players = mongo.players.find()
+        res['players'] = players
+        self.write_mongo_obj(res)
 
     def post(self):
         uniqname = self.get_argument('uniqname')
         full_name = self.get_argument('full_name')
         rank = self.get_argument('rank', None)
-        player = Player(uniqname, full_name, rank=rank)
-        player_dict = db.players.save_new(player)
-        self.write(player_dict)
+        player = {
+            'uniqname': uniqname,
+            'full_name': full_name,
+        }
+        if rank:
+            player['rank'] = rank
+        mongo.players.insert(player)
+        self.write_mongo_obj(player)
 
-class AdminHandler(cyclone.web.RequestHandler):
+class MatchHandler(web.RequestHandler):
+
+    def get(self):
+        res = dict()
+        matches = mongo.matches.find()
+        res['matches'] = matches
+        self.write_mongo_obj(res)
+
+class AdminHandler(web.RequestHandler):
 
     def get(self):
         self.render('admin.view')
