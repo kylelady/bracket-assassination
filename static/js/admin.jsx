@@ -1,4 +1,8 @@
 /*** @jsx React.DOM */
+var defaultErrorLogger = function(url, xhr, status, err) {
+  console.error(url, status, err.toString());
+}
+
 var PlayerEntry = React.createClass({
 
   handleClickDelete: function() {
@@ -29,37 +33,6 @@ var PlayerEntry = React.createClass({
 
 var PlayerTable = React.createClass({
 
-  addPlayer: function(player) {
-    $.ajax({
-      url: this.props.addUrl,
-      dataType: 'json',
-      type: 'POST',
-      data: player,
-      success: function(player) {
-        this.props.loadPlayers();
-      }.bind(this)
-    });
-  },
-
-  removePlayer: function(player, url) {
-    var players = this.state.players;
-    var trimmed_players = players.filter(function(p) {
-      return p.uniqname != player.uniqname;
-    });
-    $.ajax({
-      url: url,
-      dataType: 'json',
-      type: 'POST',
-      data: { uniqname: player.uniqname },
-      success: function() {
-        this.props.loadPlayers();
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.deleteUrl, status, err.toString());
-      }.bind(this)
-    });
-  },
-
   handleClickAdd: function() {
     var name = this.refs.name.getDOMNode().value.trim();
     var uniqname = this.refs.uniqname.getDOMNode().value.trim();
@@ -74,11 +47,15 @@ var PlayerTable = React.createClass({
     if (rank) {
       player.rank = rank;
     }
-    this.addPlayer(player);
+    this.props.addPlayer(player);
     this.refs.name.getDOMNode().value = '';
     this.refs.uniqname.getDOMNode().value = '';
     this.refs.rank.getDOMNode().value = '';
     return true;
+  },
+
+  handleClickDelete: function(player, url) {
+    this.props.removePlayer(player, url);
   },
 
   render: function() {
@@ -90,7 +67,7 @@ var PlayerTable = React.createClass({
           uniqname={player.uniqname}
           rank={player.rank}
           key={player.uniqname}
-          deleteCallback={this.removePlayer.bind(this, player, deleteUrl)}
+          deleteCallback={this.handleClickDelete.bind(this, player, deleteUrl)}
           />
       );
     }.bind(this));
@@ -241,16 +218,49 @@ var AdminInterface = React.createClass({
     this.loadPlayers();
   },
 
-  loadPlayers: function() {
+  addPlayer: function(player) {
+    var url = this.props.addUrl;
     $.ajax({
-      url: this.props.loadUrl,
+      url: url,
+      dataType: 'json',
+      type: 'POST',
+      data: player,
+      success: function(player) {
+        var players = this.state.players;
+        players.push(player);
+        this.setState({players: players});
+      }.bind(this),
+      error: defaultErrorLogger.bind(this, url)
+    });   
+  },
+
+  removePlayer: function(player, url) {
+    var players = this.state.players;
+    var trimmed_players = players.filter(function(p) {
+      return p.uniqname != player.uniqname;
+    });
+    this.setState({players: trimmed_players});
+    $.ajax({
+      url: url,
+      dataType: 'json',
+      type: 'POST',
+      data: { uniqname: player.uniqname },
+      success: function() {
+        this.loadPlayers();
+      }.bind(this),
+      error: defaultErrorLogger.bind(this, url)
+    });
+  },
+
+  loadPlayers: function() {
+    var url = this.props.loadUrl;
+    $.ajax({
+      url: url,
       dataType: 'json',
       success: function(data) {
         this.setState({players: data.players})
       }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.loadUrl, status, err.toString());
-      }.bind(this)
+      error: defaultErrorLogger.bind(this, url)
     });    
   },
 
@@ -259,7 +269,13 @@ var AdminInterface = React.createClass({
     <div>
       <div className="row">
         <h3 id="players">Players</h3>
-        <PlayerTable addUrl="/api/players/" loadUrl="/api/players/" players={this.state.players} loadPlayers={this.loadPlayers} />,
+        <PlayerTable
+          addUrl="/api/players/"
+          loadUrl="/api/players/"
+          players={this.state.players}
+          loadPlayers={this.loadPlayers}
+          addPlayer={this.addPlayer}
+          removePlayer={this.removePlayer} />,
       </div>
       <div className="row">
         <h3 id="matches">Matches</h3>
@@ -272,6 +288,6 @@ var AdminInterface = React.createClass({
 
 var mountPoint = document.getElementById('react-adminInterface');
 React.renderComponent(
-  <AdminInterface loadUrl="/api/players/" />,
+  <AdminInterface loadUrl="/api/players/" addUrl="/api/players/" />,
   mountPoint
 );
