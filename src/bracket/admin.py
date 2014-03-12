@@ -57,6 +57,14 @@ class MatchHandler(web.RequestHandler):
         res['matches'] = matches
         self.write_mongo_obj(res)
 
+    def post(self):
+        favorite_id = self.get_argument('favorite')
+        underdog_id = self.get_argument('underdog')
+        f = mongo.players.find_one(spec_or_id=favorite_id)
+        u = mongo.players.find_one(spec_or_id=underdog_id)
+        print f
+        self.write_mongo_obj(f)
+
 class AdminHandler(web.RequestHandler):
 
     def get(self):

@@ -102,6 +102,18 @@ var PlayerTable = React.createClass({
   }
 });
 
+var PlayerOption = React.createClass({
+
+  render: function() {
+    return (
+      <option value={this.props.player._id}>
+        {this.props.player.full_name + ' (' + this.props.player.uniqname + ')'}
+      </option>
+    );
+  }
+
+});
+
 var MatchEntry = React.createClass({
 
   handleClickRemoveMatch: function(event) {
@@ -126,14 +138,28 @@ var MatchEntry = React.createClass({
 
 var PlayerSelector = React.createClass({
 
+  getSelectedPlayer: function() {
+    var s = this.refs.pselect.getDOMNode();
+    if (s.options.length == 0) {
+      return null;
+    }
+    if (s.selectedIndex == -1) {
+      return null;
+    }
+    console.log(s);
+    var player = this.props.players[s.selectedIndex];
+    return player;
+  },
+
   render: function() {
     var playerOptions = this.props.players.map(function(player) {
+      var key = this.props.which + player._id.$oid;
       return (
-        <option value={player._id}>{player.full_name + ' (' + player.uniqname + ')'}</option>
+        <PlayerOption key={key} player={player} />
       );
-    })
+    }.bind(this));
     return (
-      <select required="true" className="form-control">
+      <select ref="pselect" required="true" className="form-control">
         {playerOptions}
       </select>
     );
@@ -161,12 +187,45 @@ var MatchTable = React.createClass({
     });
   },
 
+  addMatch: function(match) {
+    var favorite_id = match.favorite._id;
+    var underdog_id = match.underdog._id;
+    var body = {
+      'favorite': favorite_id,
+      'underdog': underdog_id
+    };
+    var url = '/api/matches/'
+    $.ajax({
+      url: url,
+      dataType: 'json',
+      type: 'POST',
+      data: body,
+      success: function(data) {
+        console.log(data);
+      }.bind(this),
+      error: defaultErrorLogger.bind(this, url)
+    });   
+  },
+
   componentWillMount: function() {
     this.loadMatches();
   },
 
   handleClickAddMatch: function() {
-    console.log('add match');
+    var favorite = this.refs.fselect.getSelectedPlayer();
+    var underdog = this.refs.uselect.getSelectedPlayer();
+    console.log(favorite);
+    console.log(underdog);
+    if (!favorite || !underdog) {
+      console.log('ruh roh');
+      return false;
+    }
+    var match = {
+      favorite: favorite,
+      underdog: underdog
+    };
+    this.addMatch(match);
+    return true;
   },
 
   render: function() {
@@ -188,10 +247,10 @@ var MatchTable = React.createClass({
           {matchRows}
           <tr>
             <td>
-              <PlayerSelector players={this.props.players} />
+              <PlayerSelector ref="fselect" which="favorite" players={this.props.players} playerSelected={this.favoriteSelected} />
             </td>
             <td>
-              <PlayerSelector players={this.props.players} />
+              <PlayerSelector ref="uselect" which="underdog" players={this.props.players} playerSelected={this.underdogSelected} />
             </td>
             <td>
               <button className="btn btn-sm btn-success" onClick={this.handleClickAddMatch}>
