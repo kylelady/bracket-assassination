@@ -4,8 +4,7 @@ import errors
 import const
 
 import cyclone.web
-
-from db.players import Player
+from  bson.objectid import ObjectId
 
 import db.conn
 
@@ -58,17 +57,24 @@ class MatchHandler(web.RequestHandler):
         self.write_mongo_obj(res)
 
     def post(self):
-        favorite_id = self.get_argument('favorite')
-        underdog_id = self.get_argument('underdog')
+        favorite = self.get_argument('favorite')
+        underdog = self.get_argument('underdog')
+        favorite_id = ObjectId(favorite)
+        underdog_id = ObjectId(underdog)
         f = mongo.players.find_one(spec_or_id=favorite_id)
         u = mongo.players.find_one(spec_or_id=underdog_id)
-        print f
-        self.write_mongo_obj(f)
+        if not f or not u:
+            raise errors.InvalidRequest
+        match = {
+            'favorite': favorite_id,
+            'underdog': underdog_id,
+        }
+        mongo.matches.insert(match)
+        self.write_mongo_obj(match)
 
 class AdminHandler(web.RequestHandler):
 
     def get(self):
         self.render('admin.view')
-
 
 

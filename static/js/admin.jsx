@@ -3,6 +3,10 @@ var defaultErrorLogger = function(url, xhr, status, err) {
   console.error(url, status, err.toString());
 }
 
+var playerById = function(id, player) {
+  return player._id.$oid === id.$oid;
+}
+
 var PlayerEntry = React.createClass({
 
   handleClickDelete: function() {
@@ -188,23 +192,27 @@ var MatchTable = React.createClass({
   },
 
   addMatch: function(match) {
-    var favorite_id = match.favorite._id;
-    var underdog_id = match.underdog._id;
+    var favorite_id = match.favorite._id.$oid;
+    var underdog_id = match.underdog._id.$oid;
     var body = {
-      'favorite': favorite_id,
-      'underdog': underdog_id
+      favorite: favorite_id,
+      underdog: underdog_id
     };
+    console.log(body);
     var url = '/api/matches/'
     $.ajax({
       url: url,
       dataType: 'json',
       type: 'POST',
       data: body,
-      success: function(data) {
-        console.log(data);
+      success: function(match) {
+        var matches = this.state.matches;
+        matches.push(match);
+        this.setState({matches: matches});
+        this.loadMatches();
       }.bind(this),
       error: defaultErrorLogger.bind(this, url)
-    });   
+    });  
   },
 
   componentWillMount: function() {
@@ -230,13 +238,16 @@ var MatchTable = React.createClass({
 
   render: function() {
     var matchRows = this.state.matches.map(function(match) {
+      var favorite = this.props.players.find(playerById.bind(this, match.favorite));
+      var underdog = this.props.players.find(playerById.bind(this, match.underdog));
       return (
         <MatchEntry
-          favorite={match.favorite}
-          underdog={match.underdog}
+          key={match._id.$oid}
+          favorite={favorite.full_name}
+          underdog={underdog.full_name}
         />
       );
-    });
+    }.bind(this));
     return (
       <table className="table">
         <thead>
@@ -247,10 +258,10 @@ var MatchTable = React.createClass({
           {matchRows}
           <tr>
             <td>
-              <PlayerSelector ref="fselect" which="favorite" players={this.props.players} playerSelected={this.favoriteSelected} />
+              <PlayerSelector ref="fselect" which="favorite" players={this.props.players} />
             </td>
             <td>
-              <PlayerSelector ref="uselect" which="underdog" players={this.props.players} playerSelected={this.underdogSelected} />
+              <PlayerSelector ref="uselect" which="underdog" players={this.props.players} />
             </td>
             <td>
               <button className="btn btn-sm btn-success" onClick={this.handleClickAddMatch}>
