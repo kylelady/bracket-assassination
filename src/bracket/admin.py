@@ -72,9 +72,19 @@ class MatchHandler(web.RequestHandler):
         mongo.matches.insert(match)
         self.write_mongo_obj(match)
 
+class MatchDeleteHandler(web.RequestHandler):
+
+    def post(self):
+        match = self.get_argument('match')
+        match_id = ObjectId(match)
+        mongo.matches.remove(spec_or_id=match_id)
+        self.write({'status': const.STATUS_OK})
+
 class AdminHandler(web.RequestHandler):
 
     def get(self):
         self.render('admin.view')
+
+
 
 

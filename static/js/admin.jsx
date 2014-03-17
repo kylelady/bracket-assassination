@@ -121,16 +121,17 @@ var PlayerOption = React.createClass({
 var MatchEntry = React.createClass({
 
   handleClickRemoveMatch: function(event) {
-    console.log('remove match');
+    this.props.removeCallback();
+    return true;
   },
 
   render: function() {
     return (
       <tr>
-        <td>{this.props.favorite}</td>
-        <td>{this.props.underdog}</td>
+        <td>{this.props.favorite.full_name}</td>
+        <td>{this.props.underdog.full_name}</td>
         <td>
-            <button className="btn btn-sm btn-danger" onClick={this.handleClickRemoveMatch}>
+            <button className="btn btn-sm btn-danger" onClick={this.handleClickRemoveMatch} >
               <span className="glyphicon glyphicon-remove"></span>
             </button>
         </td>
@@ -215,6 +216,23 @@ var MatchTable = React.createClass({
     });  
   },
 
+  removeMatch: function(match) {
+    var url = '/api/matches/delete'
+    var body = {
+      match: match._id.$oid
+    }
+    $.ajax({
+      url: url,
+      dataType: 'json',
+      type: 'POST',
+      data: body,
+      success: function(res) {
+        this.loadMatches()
+      }.bind(this),
+      error: defaultErrorLogger.bind(this, url)
+    })
+  },
+
   componentWillMount: function() {
     this.loadMatches();
   },
@@ -243,8 +261,9 @@ var MatchTable = React.createClass({
       return (
         <MatchEntry
           key={match._id.$oid}
-          favorite={favorite.full_name}
-          underdog={underdog.full_name}
+          favorite={favorite}
+          underdog={underdog}
+          removeCallback={this.removeMatch.bind(this, match)}
         />
       );
     }.bind(this));
